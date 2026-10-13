@@ -1,42 +1,84 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="refresh" content="0; url=frontend/INDEX.html">
-    <title>Nirogya AI | Your health, in one place</title>
-    <script>
-        window.location.replace("frontend/INDEX.html");
-    </script>
-    <style>
-        body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            display: grid;
-            place-items: center;
-            height: 100vh;
-            margin: 0;
-            background: #f7faf8;
-            color: #1b3a32;
-        }
-        .loader {
-            text-align: center;
-            padding: 24px;
-        }
-        .spinner {
-            font-size: 32px;
-            color: #16745f;
-            display: inline-block;
-            animation: spin 1s infinite linear;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        a { color: #16745f; font-weight: 700; text-decoration: none; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7faf8">
+  <meta name="description" content="Nirogya AI — a personal health records and care coordination prototype.">
+  <title>Nirogya AI | Your health, in one place</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="loader">
-        <div class="spinner">✳</div>
-        <h2>Opening Nirogya AI…</h2>
-        <p>If you are not redirected automatically, <a href="/frontend/INDEX.html">click here to enter</a>.</p>
-    </div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#overview" aria-label="Nirogya AI home"><span class="brand-mark">✳</span><span><b>Nirogya <span>AI</span></b><small>Your personal health companion</small></span></a>
+      <div class="profile-card"><div class="avatar">AS</div><div><b>Welcome, Aditya</b><small>Personal health space</small></div><button class="icon-button" type="button" data-view="settings" aria-label="Open settings">⋯</button></div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <p class="nav-caption">YOUR HEALTH</p>
+        <button class="nav-link active" data-view="overview"><span>⌂</span>Overview</button>
+        <button class="nav-link" data-view="records"><span>▤</span>Health records<i>4</i></button>
+        <button class="nav-link" data-view="timeline"><span>◷</span>Health timeline</button>
+        <button class="nav-link" data-view="assistant"><span>✧</span>Health chat<em>AI</em></button>
+        <p class="nav-caption nav-gap">CARE & WELLNESS</p>
+        <button class="nav-link" data-view="care"><span>♧</span>Find care</button>
+        <a class="nav-link" href="features.html"><span>♡</span>Women’s care</a>
+        <a class="nav-link" href="features.html"><span>◉</span>Video consultations</a>
+        <button class="nav-link" data-view="wellness"><span>⌁</span>Wellness & vitals</button>
+        <button class="nav-link" data-view="medicines"><span>＋</span>Medicines</button>
+        <button class="nav-link" data-view="emergency"><span>♡</span>Emergency help</button>
+        <p class="nav-caption nav-gap">ACCOUNT</p>
+        <a class="nav-link" href="features.html"><span>♙</span>Sign in / create account</a>
+        <button class="nav-link" data-view="settings"><span>⚙</span>Settings</button>
+      </nav>
+      <div class="sidebar-bottom"><div class="privacy-note"><span>♧</span><div><b>Your records, your choice</b><p>This prototype uses sample data. Verify information with your clinician.</p></div></div><div class="side-meta"><span class="live-dot"></span>Prototype workspace <span class="version">v1.0</span></div></div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar"><button class="menu-toggle" id="menuToggle" aria-label="Open navigation">☰</button><div class="breadcrumbs">Nirogya AI <span> / </span><b id="crumb">Overview</b></div><div class="topbar-actions"><label class="language-label" for="language">Language</label><select id="language" aria-label="Language"><option value="English">English</option><option value="Hindi">हिन्दी</option></select><a class="button button-outline" href="features.html">My account</a></div></header>
+
+      <div class="demo-banner" id="demoBanner"><span>✦</span> Prototype preview: records and chat responses are sample content. <button id="dismissBanner" aria-label="Dismiss notice">×</button></div>
+
+      <section class="view active" id="view-overview">
+        <div class="welcome-row"><div><div class="eyebrow">MONDAY, OCTOBER 13, 2026</div><h1>Your health, <span>in one place.</span></h1><p>Keep your records organized and make your next care conversation easier.</p></div><button class="button button-primary" data-action="upload"><span>＋</span> Add a health record</button></div>
+        <div class="stats-grid">
+          <article class="card stat-card"><div class="stat-top"><span class="stat-label">Health records</span><span class="stat-icon green-icon">▤</span></div><strong>04</strong><p>Across 3 categories</p><span class="trend">↑ Organized</span></article>
+          <article class="card stat-card"><div class="stat-top"><span class="stat-label">Next appointment</span><span class="stat-icon blue-icon">◷</span></div><strong>—</strong><p>No visit scheduled</p><button class="subtle-link" data-view="care">Find a clinician →</button></article>
+          <article class="card stat-card"><div class="stat-top"><span class="stat-label">Wellness check-ins</span><span class="stat-icon violet-icon">⌁</span></div><strong>03</strong><p>Sample measures this month</p><span class="trend">View wellness</span></article>
+          <article class="card stat-card"><div class="stat-top"><span class="stat-label">Medicine reminders</span><span class="stat-icon amber-icon">＋</span></div><strong>01</strong><p>Sample reminder enabled</p><button class="subtle-link" data-view="medicines">Review medicines →</button></article>
+        </div>
+        <div class="dashboard-grid">
+          <section class="card recent-card"><div class="card-heading"><div><div class="section-kicker">YOUR RECORDS</div><h2>Recently added</h2></div><button class="subtle-link" data-view="records">View all records →</button></div><div class="recent-record"><span class="file-icon">▤</span><div><b>Complete Blood Count</b><small>Diagnostic report · 12 Oct 2026</small></div><span class="status-pill review">Needs review</span><button class="row-button" data-record="Complete Blood Count" aria-label="Open blood count record">↗</button></div><div class="recent-record"><span class="file-icon prescription-icon">＋</span><div><b>Prescription — General Visit</b><small>Prescription · 08 Oct 2026</small></div><span class="status-pill">Added</span><button class="row-button" data-record="Prescription — General Visit" aria-label="Open prescription">↗</button></div><div class="recent-record"><span class="file-icon">▤</span><div><b>Annual Health Check</b><small>Diagnostic report · 23 Sep 2026</small></div><span class="status-pill">Reviewed</span><button class="row-button" data-record="Annual Health Check" aria-label="Open annual health check">↗</button></div></section>
+          <section class="card upload-card"><div class="card-heading"><div><div class="section-kicker">ADD TO YOUR LIBRARY</div><h2>Upload a record</h2></div><span class="upload-heading-icon">⇧</span></div><div class="dropzone" id="dropzone" role="button" tabindex="0"><span class="upload-symbol">⇧</span><b>Drop a file here, or <u id="browseFiles">browse</u></b><small>JPG, PNG or PDF · up to 10 MB</small></div><input id="fileInput" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple hidden><div id="uploadQueue" class="upload-queue"></div><button class="text-button" id="clearUploads" type="button">Clear this session’s upload list</button><p class="inline-note">Images are read in your browser with Tesseract.js. PDF extraction is handled by the optional backend.</p></section>
+        </div>
+        <div class="lower-grid"><section class="card"><div class="card-heading"><div><div class="section-kicker">CARE PLAN</div><h2>Coming up</h2></div><button class="subtle-link" data-view="care">Find care →</button></div><div class="appointment-row"><div class="calendar-tile"><small>NO VISIT</small><b>—</b></div><div class="appointment-copy"><b>No appointments yet</b><small>Book a visit with a provider when you need one.</small></div><button class="round-arrow" data-view="care" aria-label="Find care">→</button></div></section><section class="card chat-teaser"><div class="chat-teaser-top"><span class="assistant-avatar">✧</span><div><div class="section-kicker">NIROGYA AI</div><h2>A little help understanding your records?</h2></div></div><p>Ask about health terms or prepare questions for a clinician. This prototype uses sample, scripted responses.</p><button class="button button-outline" data-view="assistant">Open health chat →</button><div class="safety-caption">Not a diagnosis or a substitute for professional care.</div></section></div>
+        <footer class="page-footer"><span>Private by design <span class="footer-dot">·</span> Prototype data is illustrative</span><span>For urgent symptoms, contact local emergency services.</span></footer>
+      </section>
+
+      <section class="view" id="view-records"><div class="page-title-row"><div><div class="section-kicker">YOUR HEALTH LIBRARY</div><h1>Health records</h1><p>Keep reports, prescriptions, and visit notes together.</p></div><button class="button button-primary" data-action="upload">＋ Add a record</button></div><div class="toolbar"><label class="search-box"><span>⌕</span><input id="recordSearch" type="search" placeholder="Search records…" aria-label="Search records"></label><select id="recordFilter" aria-label="Filter records"><option value="all">All types</option><option value="Report">Reports</option><option value="Prescription">Prescriptions</option><option value="Visit note">Visit notes</option></select></div><section class="card table-card"><div class="table-wrap"><table><thead><tr><th>DOCUMENT</th><th>TYPE</th><th>DATE ADDED</th><th>STATUS</th><th></th></tr></thead><tbody id="recordRows"></tbody></table></div><div class="empty-state" id="recordsEmpty" hidden><span>▤</span><b>No matching records</b><p>Try a different search or add a record.</p></div></section><section class="card emergency-info"><span>⇧</span><div><b>Add a report or prescription</b><p>Use the upload area on your Overview page. JPG/PNG images can be read in your browser; PDF extraction needs the backend.</p></div><button class="button button-outline" data-view="overview">Go to upload area</button></section></section>
+
+      <section class="view" id="view-timeline"><div class="page-title-row"><div><div class="section-kicker">YOUR HEALTH HISTORY</div><h1>Health timeline</h1><p>A chronological view of your records and care activity.</p></div></div><section class="card timeline-card"><div class="timeline-filter"><span class="filter-dot"></span> All activity <span class="timeline-range">Latest first</span></div><div class="timeline-list" id="timelineList"></div></section></section>
+
+      <section class="view" id="view-assistant"><div class="page-title-row"><div><div class="section-kicker">ASK NIROGYA AI</div><h1>Health chat</h1><p>Understand terms and prepare for conversations with a clinician.</p></div><span class="ai-pill">✧ Prototype AI</span></div><div class="chat-layout"><section class="card chat-window"><div class="chat-header"><span class="assistant-avatar">✧</span><div><b>Nirogya AI assistant</b><small>Sample-data mode · not medical advice</small></div><span class="live-dot"></span></div><div class="chat-messages" id="chatMessages"><div class="message"><div class="message-avatar">✧</div><div><div class="bubble"><b>Namaste! I can help you get oriented.</b><p>Ask about a health term, a sample record, or what questions you might bring to an appointment.</p></div><small class="message-time">Nirogya AI · just now</small></div></div><div class="prompt-label">TRY ASKING</div><div class="suggestion-list"><button class="suggestion" data-prompt="What is haemoglobin?">What is haemoglobin?</button><button class="suggestion" data-prompt="Help me prepare for an appointment">Prepare for an appointment</button><button class="suggestion" data-prompt="Explain my blood report">Explain my blood report</button></div></div><form class="chat-composer" id="chatForm"><input id="chatInput" type="text" placeholder="Ask a general health question…" aria-label="Chat message" maxlength="500"><button type="submit" aria-label="Send message">↑</button></form><div class="chat-disclaimer">This demo cannot diagnose or recommend treatment. For urgent concerns, contact local emergency services.</div></section><aside class="card chat-side"><div class="section-kicker">SAMPLE CONTEXT</div><h3>Available in this demo</h3><div class="context-item"><span class="context-icon">▤</span><div><b>Complete Blood Count</b><small>Sample report · 12 Oct</small></div></div><div class="context-item"><span class="context-icon">＋</span><div><b>Prescription</b><small>Sample record · 08 Oct</small></div></div><p class="context-note">The chat uses scripted replies and fictional sample records. It is not connected to a medical AI service.</p></aside></div></section>
+
+      <section class="view" id="view-care"><div class="page-title-row"><div><div class="section-kicker">CARE THAT FITS YOUR NEEDS</div><h1>Find care</h1><p>Browse sample providers and explore the appointment flow.</p></div><a class="button button-outline" href="features.html">Women’s care & video visits →</a></div><div class="care-search"><label class="search-box"><span>⌕</span><input id="doctorSearch" type="search" placeholder="Search doctors or specialties…" aria-label="Search doctors"></label><select id="specialtyFilter" aria-label="Filter by specialty"><option value="all">All specialties</option><option value="General physician">General physician</option><option value="Cardiology">Cardiology</option><option value="Dermatology">Dermatology</option></select><button class="button button-primary" id="careSearchButton">Search</button></div><div class="care-intro"><b>Suggested providers</b><span>Illustrative profiles for prototype only</span></div><div class="doctor-grid" id="doctorGrid"></div><p class="inline-note">Provider details, availability, and fees shown here are fictional demo data. Use the account & care page for the connected appointment prototype.</p></section>
+
+      <section class="view" id="view-wellness"><div class="page-title-row"><div><div class="section-kicker">SMALL STEPS, YOUR WAY</div><h1>Wellness & vitals</h1><p>Illustrative measurements help demonstrate the dashboard layout.</p></div><button class="button button-outline" data-toast="Check-in form is a prototype interaction">＋ Log a check-in</button></div><div class="stats-grid wellness-stats"><article class="card stat-card"><div class="stat-top"><span class="stat-label">Blood pressure</span><span class="stat-icon blue-icon">⌁</span></div><strong>— <small class="unit-small">not logged</small></strong><p>Add a measurement from your device or report.</p><span class="mini-chart chart-blue">· · · · ·</span></article><article class="card stat-card"><div class="stat-top"><span class="stat-label">Heart rate</span><span class="stat-icon violet-icon">♡</span></div><strong>— <small class="unit-small">not logged</small></strong><p>No personal measurement saved.</p><span class="mini-chart chart-violet">· · · · ·</span></article><article class="card stat-card"><div class="stat-top"><span class="stat-label">Sleep check-in</span><span class="stat-icon green-icon">☾</span></div><strong>— <small class="unit-small">not logged</small></strong><p>Track your own daily notes.</p><span class="progress-track"><i style="width:42%"></i></span></article><article class="card stat-card wellness-tip"><div class="stat-top"><span class="stat-label">A gentle reminder</span><span class="stat-icon amber-icon">✦</span></div><p>Bring your questions and original reports to a clinician when you discuss your health.</p><button class="subtle-link" data-view="assistant">Ask the health chat →</button></article></div><div class="card emergency-info"><span>ⓘ</span><div><b>Your measurements are personal context.</b><p>This demo does not interpret readings or recommend treatment. Ask a qualified professional what a measurement means for you.</p></div></div></section>
+
+      <section class="view" id="view-medicines"><div class="page-title-row"><div><div class="section-kicker">MEDICATION ORGANIZER</div><h1>Medicines</h1><p>Keep prescription details together and verify them against the source.</p></div><button class="button button-outline" data-toast="Add medicine is a prototype interaction">＋ Add medicine</button></div><div class="medicine-callout"><span>ⓘ</span><div><b>Sample information only</b><p>Verify every medicine name, strength, dose, and timing against the original prescription.</p></div></div><div class="medicine-list" id="medicineList"></div><section class="card medicine-help"><span class="medicine-help-icon">?</span><div><b>Have questions about a prescription?</b><p>Ask the prescribing clinician or pharmacist to explain the original instructions.</p></div><a href="features.html" class="button button-outline">Account & care</a></section></section>
+
+      <section class="view" id="view-emergency"><div class="page-title-row"><div><div class="section-kicker">HELP WHEN YOU NEED IT</div><h1>Emergency help</h1><p>If someone may be in immediate danger, contact emergency services now.</p></div></div><div class="emergency-grid"><article class="emergency-card"><div class="emergency-symbol">＋</div><div class="section-kicker">IMMEDIATE ASSISTANCE</div><h2>Call local emergency services</h2><p>In India, dial 112 for emergency response. If you are elsewhere, use your local emergency number.</p><a class="button emergency-button" href="tel:112">Call 112</a><small>Only use this number if you are in India.</small></article><section class="card emergency-contacts"><div class="section-kicker">YOUR SUPPORT NETWORK</div><h2>Trusted contacts</h2><p>These are example contacts; update them before relying on this page.</p><div class="contact-row"><span class="contact-avatar">FC</span><div><b>Family contact</b><small>Example only · no number saved</small></div><span class="setting-status">Not configured</span></div><div class="contact-row"><span class="contact-avatar contact-two">PC</span><div><b>Primary clinician</b><small>Example only · no number saved</small></div><span class="setting-status">Not configured</span></div><button class="button button-outline button-wide" data-toast="Contact management is a prototype interaction">＋ Add trusted contact</button></section></div><div class="card emergency-info"><span>♡</span><div><b>For non-emergency care</b><p>Browse sample providers or request a women’s care consultation from the account & care page.</p></div><a class="button button-outline" href="features.html">Open care options</a></div></section>
+
+      <section class="view" id="view-settings"><div class="page-title-row"><div><div class="section-kicker">YOUR PREFERENCES</div><h1>Settings</h1><p>Manage prototype preferences and find account options.</p></div><a class="button button-primary" href="features.html">Sign in / create account</a></div><div class="card settings-card"><div class="setting-row"><div><b>Language</b><p>Choose the display language for this prototype.</p></div><select id="settingsLanguage" aria-label="Preferred language"><option value="English">English</option><option value="Hindi">हिन्दी</option></select></div><div class="setting-row"><div><b>Account and privacy</b><p>Connect Supabase Auth to use registered accounts and private consultations.</p></div><a class="button button-outline" href="features.html">Open account page</a></div><div class="setting-row"><div><b>Data notice</b><p>The dashboard records and assistant replies are sample content. Avoid entering real medical or identifying information into this demo.</p></div><span class="setting-status">Prototype</span></div></div></section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modal" hidden><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="modal-close" id="modalClose" aria-label="Close dialog">×</button><div class="section-kicker">SAMPLE HEALTH RECORD</div><h2 id="modalTitle"></h2><p class="modal-intro" id="modalIntro"></p><div class="modal-detail"><b>About this record</b><p id="modalMeaning"></p></div><div class="modal-caution" id="modalVerify"></div><button class="button button-primary" id="modalDone">Done</button></section></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="script.js"></script>
+  <script src="tesseract.js"></script>
 </body>
 </html>

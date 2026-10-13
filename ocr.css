@@ -1,0 +1,9 @@
+.ocr-panel{margin-top:10px;padding:11px;background:#f9fcfa;border:1px solid #e6efe9;border-radius:9px}
+.ocr-panel[hidden]{display:none}
+.ocr-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ocr-panel-head b,.ocr-panel-head small{display:block}
+.ocr-panel-head b{font-size:9px;color:#426455}
+.ocr-panel-head small{font-size:8px;color:#8b9c92;margin-top:4px}
+.ocr-panel progress{width:100%;height:5px;display:block;margin:9px 0;accent-color:#379373}
+.ocr-panel textarea{width:100%;resize:vertical;border:1px solid #e5ece7;border-radius:7px;background:white;padding:8px;color:#50695d;font:9px/1.55 'DM Sans',sans-serif;outline-color:#80b99c}
+.ocr-panel>p{font-size:7px;line-height:1.55;color:#929f97;margin:7px 0 0}
