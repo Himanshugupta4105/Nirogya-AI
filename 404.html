@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nirogya AI | Page Not Found</title>
+    <script>
+        // GitHub Pages 404 SPA redirect trick
+        // Preserve the path and redirect to root with a query param
+        var l = window.location;
+        l.replace(
+            l.protocol + '//' + l.host + l.pathname.split('/').slice(0, 1 + 1).join('/') + '/?/' +
+            l.pathname.slice(1).split('/').slice(1).join('/').replace(/&/g, '~and~') +
+            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+            l.hash
+        );
+    </script>
+    <style>
+        body { margin: 0; background: #f7faf8; font-family: 'DM Sans', sans-serif; display: grid; place-items: center; height: 100vh; color: #1b3a32; }
+        .loader { text-align: center; padding: 24px; }
+        .spinner { font-size: 32px; color: #16745f; display: inline-block; animation: spin 1s infinite linear; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        a { color: #16745f; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="loader">
+        <div class="spinner">✳</div>
+        <h2>Redirecting…</h2>
+        <p>If not redirected, <a href="frontend/INDEX.html">click here</a>.</p>
+    </div>
+</body>
+</html>
