@@ -1,0 +1,47 @@
+.request-reason {
+    width: 100%;
+    font-size: 8px;
+    line-height: 1.55;
+    color: #75897d;
+    background: #f7faf8;
+    border-radius: 7px;
+    padding: 8px;
+    margin: 0
+}
+
+.request-reason b {
+    color: #4f6d5c
+}
+
+.schedule-controls {
+    width: 100%;
+    display: flex;
+    align-items: end;
+    gap: 9px
+}
+
+.schedule-controls label {
+    display: grid;
+    gap: 5px;
+    flex: 1;
+    font-size: 8px;
+    font-weight: 700;
+    color: #668072
+}
+
+.schedule-controls input {
+    min-width: 0;
+    border: 1px solid #e1eae4;
+    border-radius: 7px;
+    background: #fbfdfb;
+    padding: 8px;
+    font-size: 9px;
+    color: #466353
+}
+
+.schedule-controls button {
+    border: 0;
+    background: #eaf5ee;
+    border-radius: 7px;
+    padding: 9px 10px
+}
