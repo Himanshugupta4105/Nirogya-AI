@@ -26,6 +26,8 @@ const FILES = [
     'frontend/INDEX.html',
     'frontend/STYLE.css',
     'frontend/script.js',
+    'frontend/nirogya-db.js',
+    'frontend/tesseract.js',
     'frontend/chat-engine.js',
     'frontend/features.html',
     'frontend/features.js',
