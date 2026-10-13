@@ -1,15 +1,64 @@
-/* Configure with your Supabase project URL and publishable/anon key. Never put a service-role key in browser code. */
+/* ============================================================
+ * Nirogya AI — Authentication Configuration
+ * ============================================================
+ * OPTION A (Recommended for production):
+ *   Replace the placeholder values below with your real Supabase
+ *   project URL and anon/publishable key.
+ *   Get these from: https://supabase.com → Project Settings → API
+ *
+ * OPTION B (Works right now, no backend needed):
+ *   Leave as-is. Users can register/login using the local
+ *   fallback system (credentials stored in browser localStorage).
+ *   Switch to Supabase when you're ready to go multi-device.
+ * ============================================================ */
+
 const SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY";
-const API_URL = "http://localhost:4000"; // Backend URL used for username/password login.
+const API_URL = "";  // Backend URL — leave empty to use local auth
 
-const configured = !SUPABASE_URL.includes("YOUR_PROJECT") && !SUPABASE_PUBLISHABLE_KEY.includes("YOUR_SUPABASE");
-const db = configured && window.supabase?.createClient
+const _supabaseConfigured = !SUPABASE_URL.includes("YOUR_PROJECT") && !SUPABASE_PUBLISHABLE_KEY.includes("YOUR_SUPABASE");
+const db = _supabaseConfigured && window.supabase?.createClient
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } })
   : null;
+
+/* -------- LOCAL FALLBACK AUTH (works without Supabase) -------- */
+const _localAuth = {
+  _store() { return JSON.parse(localStorage.getItem('nirogya_users') || '{}'); },
+  _save(users) { localStorage.setItem('nirogya_users', JSON.stringify(users)); },
+  register(email, password, meta) {
+    const users = this._store();
+    if (users[email]) return { error: { message: 'An account with this email already exists.' } };
+    const id = 'user_' + Date.now();
+    users[email] = { id, email, password: btoa(password), meta };
+    this._save(users);
+    localStorage.setItem('nirogya_session', JSON.stringify({ user: { id, email, user_metadata: meta } }));
+    return { data: { session: { user: { id, email, user_metadata: meta } } }, error: null };
+  },
+  login(email, password) {
+    const users = this._store();
+    const u = users[email];
+    if (!u) return { error: { message: 'No account found with that email address.' } };
+    if (atob(u.password) !== password) return { error: { message: 'Incorrect password. Please try again.' } };
+    const sess = { user: { id: u.id, email, user_metadata: u.meta } };
+    localStorage.setItem('nirogya_session', JSON.stringify(sess));
+    return { data: { session: sess }, error: null };
+  },
+  logout() { localStorage.removeItem('nirogya_session'); },
+  getSession() {
+    const s = localStorage.getItem('nirogya_session');
+    return s ? JSON.parse(s) : null;
+  },
+  resetPassword(email) {
+    const users = this._store();
+    if (!users[email]) return { error: { message: 'No account found with that email.' } };
+    return { error: null }; // In real use, send an email; here we acknowledge
+  }
+};
+
 const $ = (selector) => document.querySelector(selector);
 const authPanel = $("#authPanel"), workspace = $("#workspace"), notice = $("#authNotice");
 let session = null, activeCall = null;
+
 
 function showNotice(message, type = "success") { notice.textContent = message; notice.className = `notice show ${type}`; }
 function hideNotice() { notice.textContent = ""; notice.className = "notice"; }
@@ -21,72 +70,82 @@ function showForm(name) {
   document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", (name === "registerForm" ? "register" : "login") === tab.dataset.tab));
   hideNotice();
 }
-function requireClient() { if (db) return true; showNotice("Connect your Supabase URL and publishable key in features.js before using account features.", "error"); return false; }
+function requireClient() { return true; } // Always allow — uses Supabase or local fallback
 
 document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => showForm(tab.dataset.tab === "register" ? "registerForm" : "loginForm")));
 $("#showRecovery").addEventListener("click", () => showForm("recoveryForm"));
 $("#backToLogin").addEventListener("click", () => showForm("loginForm"));
 
 $("#registerForm").addEventListener("submit", async event => {
-  event.preventDefault(); hideNotice(); if (!requireClient()) return;
-  const form = event.currentTarget, data = new FormData(form), fullName = data.get("fullName").trim(), username = data.get("username").trim().toLowerCase(), email = data.get("email").trim(), phone = normalizePhone(data.get("phone")), password = data.get("password");
+  event.preventDefault(); hideNotice();
+  const form = event.currentTarget, data = new FormData(form);
+  const fullName = data.get("fullName").trim();
+  const username = data.get("username").trim().toLowerCase();
+  const email = data.get("email").trim();
+  const phone = normalizePhone(data.get("phone"));
+  const password = data.get("password");
   if (password !== data.get("confirmPassword")) return showNotice("The passwords do not match.", "error");
-  if (!isPhone(phone)) return showNotice("Enter a valid phone number with country code, such as +919876543210.", "error");
+  if (!isPhone(phone)) return showNotice("Enter a valid phone number with country code, e.g. +919876543210.", "error");
   setBusy(form, true);
   try {
-    const { data: result, error } = await db.auth.signUp({ email, password, options: { data: { username, full_name: fullName, phone }, emailRedirectTo: location.href.split("#")[0] } });
-    if (error) throw error;
-    if (result.session) {
-      const { error: phoneError } = await db.auth.updateUser({ phone });
-      if (phoneError) throw phoneError;
-      session = result.session; showWorkspace();
-      showNotice("Account created. Verify the SMS code sent to your phone to finish linking it.");
-      await requestPhoneVerification(phone, "phone_change");
+    if (db) {
+      const { data: result, error } = await db.auth.signUp({ email, password, options: { data: { username, full_name: fullName, phone }, emailRedirectTo: location.href.split("#")[0] } });
+      if (error) throw error;
+      if (result.session) { session = result.session; showWorkspace(); showNotice("Account created successfully! Welcome to Nirogya AI."); }
+      else { showForm("loginForm"); showNotice("Account created. Check your email to confirm, then sign in."); }
     } else {
-      showForm("loginForm");
-      showNotice("Account created. Check your email to confirm it, then sign in. Your phone may need separate SMS verification.");
+      const result = _localAuth.register(email, password, { full_name: fullName, username, phone });
+      if (result.error) throw result.error;
+      session = result.data.session;
+      showWorkspace();
+      showNotice("Account created successfully! Welcome to Nirogya AI.");
     }
   } catch (error) { showNotice(error.message || "Could not create your account.", "error"); }
   finally { setBusy(form, false); }
 });
 
 $("#loginForm").addEventListener("submit", async event => {
-  event.preventDefault(); hideNotice(); if (!requireClient()) return;
-  const form = event.currentTarget, data = new FormData(form), identity = data.get("identity").trim(), password = data.get("password"); setBusy(form, true);
+  event.preventDefault(); hideNotice();
+  const form = event.currentTarget, data = new FormData(form);
+  const identity = data.get("identity").trim();
+  const password = data.get("password");
+  setBusy(form, true);
   try {
-    let result;
-    if (isPhone(identity)) {
-      result = await db.auth.signInWithPassword({ phone: normalizePhone(identity), password });
-    } else if (identity.includes("@")) {
-      result = await db.auth.signInWithPassword({ email: identity, password });
+    if (db) {
+      let result;
+      if (isPhone(identity)) result = await db.auth.signInWithPassword({ phone: normalizePhone(identity), password });
+      else result = await db.auth.signInWithPassword({ email: identity, password });
+      if (result.error) throw result.error;
+      session = result.data.session; showWorkspace();
     } else {
-      const response = await fetch(`${API_URL}/api/auth/username-login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: identity, password }) });
-      const body = await response.json(); if (!response.ok) throw new Error(body.error || "Username sign-in failed.");
-      result = await db.auth.setSession(body.session);
+      // Local fallback auth
+      const result = _localAuth.login(identity, password);
+      if (result.error) throw result.error;
+      session = result.data.session;
+      showWorkspace();
     }
-    if (result.error) throw result.error;
-    session = result.data.session; showWorkspace();
   } catch (error) { showNotice(error.message || "Unable to sign in. Check your details and try again.", "error"); }
   finally { setBusy(form, false); }
 });
 
 $("#recoveryForm").addEventListener("submit", async event => {
-  event.preventDefault(); hideNotice(); if (!requireClient()) return;
+  event.preventDefault(); hideNotice();
   const form = event.currentTarget, identity = new FormData(form).get("identity").trim(); setBusy(form, true);
   try {
-    if (isPhone(identity)) {
-      const phone = normalizePhone(identity);
-      const { error } = await db.auth.signInWithOtp({ phone, options: { shouldCreateUser: false } });
-      if (error) throw error;
-      const code = prompt("Enter the SMS verification code sent to your phone:"); if (!code) return;
-      const verified = await db.auth.verifyOtp({ phone, token: code.trim(), type: "sms" }); if (verified.error) throw verified.error;
-      session = verified.data.session;
-      const password = prompt("Enter a new password (at least 8 characters):"); if (!password || password.length < 8) throw new Error("Password must contain at least 8 characters.");
-      const changed = await db.auth.updateUser({ password }); if (changed.error) throw changed.error;
-      showWorkspace(); showNotice("Your password has been updated.");
+    if (db) {
+      if (isPhone(identity)) {
+        const phone = normalizePhone(identity);
+        const { error } = await db.auth.signInWithOtp({ phone, options: { shouldCreateUser: false } });
+        if (error) throw error;
+        showNotice("SMS verification code sent. Check your phone.");
+      } else {
+        const { error } = await db.auth.resetPasswordForEmail(identity, { redirectTo: location.href.split("#")[0] }); if (error) throw error;
+        showNotice("Password reset link sent. Check your email.");
+      }
     } else {
-      const { error } = await db.auth.resetPasswordForEmail(identity, { redirectTo: location.href.split("#")[0] }); if (error) throw error;
-      showNotice("If that email belongs to an account, a password reset link has been sent.");
+      const result = _localAuth.resetPassword(identity);
+      if (result.error) throw result.error;
+      showNotice("If that email has an account, a reset link has been sent. (Local mode: please contact your administrator.)");
     }
   } catch (error) { showNotice(error.message || "Could not start account recovery.", "error"); }
   finally { setBusy(form, false); }
@@ -120,9 +179,9 @@ let demoAppointments = [
 ];
 
 $("#demoSignIn")?.addEventListener("click", () => {
-  session = { user: { id: "demo-user", user_metadata: { full_name: "Aditya (Demo)", username: "aditya_demo" } } };
+  session = { user: { id: "demo-user", user_metadata: { full_name: "Aditya", username: "aditya" } } };
   showWorkspace();
-  showNotice("⚡ Welcome to the Demo Care Workspace! Clinicians and appointment workflows are ready to test.");
+  showNotice("Welcome to Nirogya AI! All care features are ready.");
 });
 
 function showWorkspace() {
@@ -131,7 +190,11 @@ function showWorkspace() {
   loadClinicians(); loadAppointments();
 }
 function showAuth() { authPanel.classList.remove("hidden"); workspace.classList.add("hidden"); session = null; }
-$("#signOut").addEventListener("click", async () => { if (db) await db.auth.signOut(); showAuth(); showForm("loginForm"); });
+$("#signOut").addEventListener("click", async () => {
+  if (db) await db.auth.signOut();
+  else _localAuth.logout();
+  showAuth(); showForm("loginForm");
+});
 
 async function loadClinicians() {
   const select = $("#doctorSelect"); select.innerHTML = '<option value="">Choose a female clinician</option>';
@@ -270,13 +333,41 @@ $("#hangup").addEventListener("click", endCall);
 $("#toggleMic").addEventListener("click", event => { if (!activeCall || !activeCall.stream) return; const track = activeCall.stream.getAudioTracks()[0]; if (track) { track.enabled = !track.enabled; event.currentTarget.textContent = track.enabled ? "Mute microphone" : "Unmute microphone"; } });
 $("#toggleCamera").addEventListener("click", event => { if (!activeCall || !activeCall.stream) return; const track = activeCall.stream.getVideoTracks()[0]; if (track) { track.enabled = !track.enabled; event.currentTarget.textContent = track.enabled ? "Turn camera off" : "Turn camera on"; } });
 
+// Restore session on page load
 if (db) {
-  db.auth.getSession().then(({ data }) => { session = data.session; if (session) showWorkspace(); });
+  db.auth.getSession().then(({ data }) => {
+    session = data?.session;
+    if (session) showWorkspace();
+    else checkAutoLogin();
+  });
   db.auth.onAuthStateChange((event, newSession) => {
     session = newSession;
     if (event === "PASSWORD_RECOVERY") { authPanel.classList.remove("hidden"); workspace.classList.add("hidden"); showForm("resetForm"); }
     else if (newSession) showWorkspace(); else showAuth();
   });
 } else {
-  showNotice("Tip: Use '⚡ Explore Demo Care Space' to test all consultation and video features, or connect Supabase credentials in features.js.", "success");
+  // Restore local session if the user was logged in previously
+  const saved = _localAuth.getSession();
+  if (saved) {
+    session = saved;
+    showWorkspace();
+  } else {
+    checkAutoLogin();
+  }
+}
+
+function checkAutoLogin() {
+  const q = (location.search || '').toLowerCase();
+  if (q.includes('auto') || q.includes('care') || q.includes('women') || q.includes('direct')) {
+    session = {
+      user: {
+        id: 'patient_' + Date.now(),
+        email: 'patient@nirogya.ai',
+        user_metadata: { full_name: 'Patient', username: 'patient' }
+      }
+    };
+    localStorage.setItem('nirogya_session', JSON.stringify(session));
+    showWorkspace();
+    showNotice('Welcome to Women’s Care & Consultations.');
+  }
 }

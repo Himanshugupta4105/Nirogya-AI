@@ -2512,4 +2512,244 @@ tbody tr:last-child td {
     font-size: 11px;
     color: #3b5349;
     margin-top: 4px;
+}
+
+/* ============================================================
+ * DARK MODE & TOGGLE SWITCH
+ * ============================================================ */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    cursor: pointer;
+}
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.toggle-track {
+    position: absolute;
+    inset: 0;
+    background-color: #cbd5e1;
+    border-radius: 26px;
+    transition: background-color 0.25s ease;
+}
+.toggle-thumb {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.25s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch input:checked + .toggle-track {
+    background-color: var(--green, #21846b);
+}
+.toggle-switch input:checked + .toggle-track .toggle-thumb {
+    transform: translateX(22px);
+}
+
+/* Dark Mode Theme */
+body.dark-mode, :root.dark-mode {
+    --ink: #e6f0ec;
+    --muted: #8fa59c;
+    --line: #263832;
+    --paper: #162420;
+    --canvas: #0e1715;
+    --green: #2eb896;
+    --green-dark: #229478;
+    --green-pale: #152922;
+    --mint: #1c3b32;
+    --blue: #6496db;
+    --amber: #e5a43b;
+    --violet: #9b86de;
+    --shadow: 0 8px 24px rgba(0, 0, 0, .45);
+    background: #0e1715;
+    color: #e6f0ec;
+}
+body.dark-mode .sidebar {
+    background: #121e1a;
+    border-right-color: #24352f;
+}
+body.dark-mode .topbar {
+    background: rgba(14, 23, 21, 0.92);
+    border-bottom-color: #24352f;
+}
+body.dark-mode .card,
+body.dark-mode .modal-card,
+body.dark-mode .analysis-finding,
+body.dark-mode .recovery-step {
+    background: #172622;
+    border-color: #263933;
+    color: #e6f0ec;
+}
+body.dark-mode .card p,
+body.dark-mode .modal-card p,
+body.dark-mode .setting-row p {
+    color: #92a89f;
+}
+body.dark-mode .nav-link {
+    color: #92a89f;
+}
+body.dark-mode .nav-link:hover,
+body.dark-mode .nav-link.active {
+    background: #1e332c;
+    color: #e6f0ec;
+}
+body.dark-mode .button-outline {
+    border-color: #2a4038;
+    color: #e6f0ec;
+    background: transparent;
+}
+body.dark-mode .button-outline:hover {
+    background: #1e332c;
+}
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background: #111d19;
+    border-color: #2a4038;
+    color: #e6f0ec;
+}
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: #60756d;
+}
+body.dark-mode .recent-record,
+body.dark-mode .timeline-item,
+body.dark-mode .contact-row,
+body.dark-mode .setting-row {
+    border-bottom-color: #24352f;
+}
+body.dark-mode .table-doc small,
+body.dark-mode .recent-record small,
+body.dark-mode .doctor-meta {
+    color: #8fa59c;
+}
+body.dark-mode tr {
+    border-bottom-color: #24352f;
+}
+body.dark-mode .chat-messages {
+    background: #101c18;
+}
+body.dark-mode .bubble {
+    background: #1e322b;
+    color: #e6f0ec;
+    border-color: #284037;
+}
+body.dark-mode .user-message .bubble {
+    background: #21846b;
+    color: #ffffff;
+}
+body.dark-mode .message-time {
+    color: #728a80;
+}
+body.dark-mode .part-btn {
+    background: #162621;
+    border-color: #263933;
+    color: #9ab0a7;
+}
+body.dark-mode .part-btn.active {
+    background: #21846b;
+    color: #fff;
+    border-color: #21846b;
+}
+body.dark-mode .symptom-chip {
+    background: #162621;
+    border-color: #263933;
+    color: #9ab0a7;
+}
+body.dark-mode .symptom-chip.selected {
+    background: #21846b;
+    color: #fff;
+    border-color: #21846b;
+}
+body.dark-mode .privacy-note {
+    background: #162621;
+    border-color: #263933;
+}
+body.dark-mode .privacy-note p {
+    color: #8fa59c;
+}
+body.dark-mode .breadcrumbs b {
+    color: #e6f0ec;
+}
+body.dark-mode .stat-card strong {
+    color: #e6f0ec;
+}
+body.dark-mode .stat-card p {
+    color: #8fa59c;
+}
+
+/* Women's Care in Dashboard Styles */
+.women-hero-card {
+    background: linear-gradient(135deg, rgba(236,72,153,0.08) 0%, rgba(244,114,182,0.03) 100%);
+    border: 1px solid rgba(236,72,153,0.22);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+body.dark-mode .women-hero-card {
+    background: linear-gradient(135deg, rgba(236,72,153,0.15) 0%, rgba(131,24,67,0.1) 100%);
+    border-color: rgba(236,72,153,0.3);
+}
+.women-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(236,72,153,0.12);
+    color: #db2777;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+body.dark-mode .women-badge {
+    background: rgba(236,72,153,0.2);
+    color: #f472b6;
+}
+.women-topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+.women-topic-chip {
+    padding: 12px 14px;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--ink);
+}
+body.dark-mode .women-topic-chip {
+    background: #182823;
+    border-color: #283c35;
+    color: #e6f0ec;
+}
+.women-topic-chip:hover, .women-topic-chip.active {
+    border-color: #db2777;
+    background: rgba(236,72,153,0.06);
+    color: #db2777;
+}
+body.dark-mode .women-topic-chip:hover, body.dark-mode .women-topic-chip.active {
+    background: rgba(236,72,153,0.15);
+    color: #f472b6;
 }

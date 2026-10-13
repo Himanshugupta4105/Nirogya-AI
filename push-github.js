@@ -24,6 +24,12 @@ const FILES = [
     '.nojekyll',
     '404.html',
     'frontend/INDEX.html',
+    'frontend/STYLE.css',
+    'frontend/script.js',
+    'frontend/chat-engine.js',
+    'frontend/features.html',
+    'frontend/features.js',
+    'frontend/features.css',
     '.github/workflows/deploy.yml'
 ];
 

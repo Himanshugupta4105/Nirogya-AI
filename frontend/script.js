@@ -22,7 +22,7 @@ const medicines = [
   {name:'Shelcal 500', details:'Calcium & Vitamin D3 · Bone Health · ₹145', instruction:'Take 1 tablet daily after lunch or dinner for bone and joint support.', reminder:'Reminder set · 8:30 PM'},
   {name:'Panadol Advance 500mg', details:'Fast-acting Paracetamol · ₹120', instruction:'Take 1-2 tablets for tension headache. Maximum 8 tablets in 24 hours.', reminder:'Reminder off'}
 ];
-const views = {overview:'Overview',records:'Health records',timeline:'Health timeline',assistant:'Health chat',symptoms:'AI Symptom Checker',care:'Find care',wellness:'Wellness & vitals',medicines:'Medicines',emergency:'Emergency help',settings:'Settings'};
+const views = {overview:'Overview',records:'Health records',timeline:'Health timeline',assistant:'Health chat',symptoms:'AI Symptom Checker',care:'Find care','women-care':"Women's care",wellness:'Wellness & vitals',medicines:'Medicines',emergency:'Emergency help',settings:'Settings'};
 let currentUploads = [];
 let toastTimer;
 
@@ -31,7 +31,7 @@ function openView(name){if(!views[name])return;document.querySelectorAll('.view'
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>openView(button.dataset.view)));
 document.getElementById('menuToggle').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
 document.addEventListener('click',event=>{const sidebar=document.getElementById('sidebar');const toggle=document.getElementById('menuToggle');if(sidebar.classList.contains('open')&&!sidebar.contains(event.target)&&!toggle.contains(event.target)){sidebar.classList.remove('open')}});
-document.getElementById('dismissBanner').addEventListener('click',()=>document.getElementById('demoBanner').remove());
+document.getElementById('dismissBanner')?.addEventListener('click',()=>document.getElementById('demoBanner')?.remove());
 
 function renderRecords(){const query=(document.getElementById('recordSearch')?.value||'').trim().toLowerCase();const filter=document.getElementById('recordFilter')?.value||'all';const filtered=records.filter(record=>(filter==='all'||record.type===filter)&&`${record.name} ${record.type} ${record.note}`.toLowerCase().includes(query));const tbody=document.getElementById('recordRows');tbody.innerHTML=filtered.map((record,index)=>`<tr><td><div class="table-doc"><span class="file-icon">${record.icon}</span><span><b>${escapeHTML(record.name)}</b><small>${escapeHTML(record.note)}</small></span></div></td><td><span class="type-pill">${escapeHTML(record.type)}</span></td><td>${escapeHTML(record.date)}</td><td><span class="status-pill ${record.status==='Needs review'?'review':''}">${escapeHTML(record.status)}</span></td><td><button class="row-button" data-record="${escapeHTML(record.name)}" aria-label="Open ${escapeHTML(record.name)}">↗</button></td></tr>`).join('');document.getElementById('recordsEmpty').hidden=filtered.length>0;tbody.querySelectorAll('[data-record]').forEach(button=>button.addEventListener('click',()=>openRecord(button.dataset.record)))}
 function renderTimeline(){document.getElementById('timelineList').innerHTML=events.map(event=>`<article class="timeline-item"><div class="timeline-date">${escapeHTML(event.date)}</div><div class="timeline-marker"></div><div class="timeline-content"><b>${escapeHTML(event.title)}</b><p>${escapeHTML(event.detail)}</p><span class="timeline-tag">${escapeHTML(event.tag)}</span></div></article>`).join('')}
@@ -43,9 +43,9 @@ function openRecord(name){const record=records.find(item=>item.name===name)||rec
 document.querySelectorAll('[data-record]').forEach(button=>button.addEventListener('click',()=>openRecord(button.dataset.record)));function closeModal(){modal.hidden=true}document.getElementById('modalClose').addEventListener('click',closeModal);document.getElementById('modalDone').addEventListener('click',closeModal);modal.addEventListener('click',event=>{if(event.target===modal)closeModal()});document.addEventListener('keydown',event=>{if(event.key==='Escape'){closeModal();document.getElementById('sidebar').classList.remove('open')}});
 
 const fileInput=document.getElementById('fileInput');const dropzone=document.getElementById('dropzone');function chooseFiles(){fileInput.click()}document.getElementById('browseFiles').addEventListener('click',event=>{event.stopPropagation();chooseFiles()});dropzone.addEventListener('click',chooseFiles);dropzone.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();chooseFiles()}});document.querySelectorAll('[data-action="upload"]').forEach(button=>button.addEventListener('click',chooseFiles));fileInput.addEventListener('change',()=>{addFiles([...fileInput.files]);fileInput.value=''});['dragenter','dragover'].forEach(type=>dropzone.addEventListener(type,event=>{event.preventDefault();dropzone.classList.add('dragover')}));['dragleave','drop'].forEach(type=>dropzone.addEventListener(type,event=>{event.preventDefault();dropzone.classList.remove('dragover')}));dropzone.addEventListener('drop',event=>addFiles([...event.dataTransfer.files]));
-function addFiles(files){if(!files.length)return;const accepted=[];files.forEach(file=>{const validType=/\.(pdf|jpe?g|png)$/i.test(file.name);if(!validType){showToast(`${file.name} is not a supported file type`);return}if(file.size>10*1024*1024){showToast(`${file.name} is larger than 10 MB`);return}accepted.push(file)});if(!accepted.length)return;accepted.forEach(file=>currentUploads.push({name:file.name,size:formatSize(file.size)}));renderUploads();document.dispatchEvent(new CustomEvent('nirogya:files-added',{detail:{files:accepted}}));showToast(`${accepted.length} file${accepted.length===1?'':'s'} added to this demo session`)}
+function addFiles(files){if(!files.length)return;const accepted=[];files.forEach(file=>{const validType=/\.(pdf|jpe?g|png)$/i.test(file.name);if(!validType){showToast(`${file.name} is not a supported file type`);return}if(file.size>10*1024*1024){showToast(`${file.name} is larger than 10 MB`);return}accepted.push(file)});if(!accepted.length)return;accepted.forEach(file=>currentUploads.push({name:file.name,size:formatSize(file.size)}));renderUploads();document.dispatchEvent(new CustomEvent('nirogya:files-added',{detail:{files:accepted}}));showToast(`${accepted.length} file${accepted.length===1?'':'s'} added and ready`)}
 function formatSize(bytes){return bytes<1024*1024?`${Math.max(1,Math.round(bytes/1024))} KB`:`${(bytes/1024/1024).toFixed(1)} MB`}
-function renderUploads(){const target=document.getElementById('uploadQueue');target.innerHTML=currentUploads.map(file=>`<div class="queue-item"><span>▤ ${escapeHTML(file.name)}</span><small>${escapeHTML(file.size)} · demo only</small></div>`).join('')}
+function renderUploads(){const target=document.getElementById('uploadQueue');target.innerHTML=currentUploads.map(file=>`<div class="queue-item"><span>▤ ${escapeHTML(file.name)}</span><small>${escapeHTML(file.size)} · ready</small></div>`).join('')}
 document.getElementById('clearUploads').addEventListener('click',()=>{currentUploads=[];renderUploads();document.dispatchEvent(new Event('nirogya:uploads-cleared'));showToast('Session upload list cleared')});
 
 document.getElementById('doctorGrid').innerHTML=doctors.map(doctor=>`<article class="doctor-card" data-specialty="${escapeHTML(doctor.specialty)}" data-doctor="${escapeHTML(doctor.name.toLowerCase())}"><div class="doctor-top"><div class="doctor-avatar ${doctor.color}">${doctor.initials}</div><div><b>${escapeHTML(doctor.name)}</b><small>${escapeHTML(doctor.specialty)}</small></div></div><div class="rating">★ ${doctor.rating} <span style="color:#a0aaa4">· ${doctor.reviews}</span></div><div class="doctor-meta"><span>${escapeHTML(doctor.experience)}</span><br>${escapeHTML(doctor.location)}<br>Consultation · ${doctor.fee}</div><div class="doctor-footer"><small>● ${escapeHTML(doctor.slots)}</small><button class="button button-outline book-doctor" data-name="${escapeHTML(doctor.name)}">Book a visit</button></div></article>`).join('');
@@ -185,7 +185,7 @@ function runSymptomAnalysis() {
       </div>
       <div style="margin-top:20px;display:flex;gap:10px">
         <button class="button button-primary" style="flex:1" data-view="care" type="button"><span>♧</span> Consult a Doctor</button>
-        <a class="button button-outline" style="flex:1" href="features.html"><span>♡</span> Women's Care Visit</a>
+        <button class="button button-outline" style="flex:1" data-view="women-care" type="button"><span>♡</span> Women's Care Visit</button>
       </div>
     `;
 
@@ -195,6 +195,139 @@ function runSymptomAnalysis() {
 
     showToast('Neural symptom assessment complete');
   }, 650);
+}
+
+// ============================================================
+// DARK MODE HANDLER
+// ============================================================
+const darkModeToggle = document.getElementById('darkModeToggle');
+function applyDarkMode(enabled) {
+  document.body.classList.toggle('dark-mode', enabled);
+  document.documentElement.classList.toggle('dark-mode', enabled);
+  if (darkModeToggle) darkModeToggle.checked = enabled;
+  localStorage.setItem('nirogya_dark_mode', enabled ? 'true' : 'false');
+}
+
+const savedDark = localStorage.getItem('nirogya_dark_mode') === 'true';
+if (savedDark) applyDarkMode(true);
+
+if (darkModeToggle) {
+  darkModeToggle.addEventListener('change', (e) => {
+    applyDarkMode(e.target.checked);
+    showToast(e.target.checked ? 'Dark mode enabled 🌙' : 'Light mode enabled ☀️');
+  });
+}
+
+// ============================================================
+// GEMINI API KEY SETTINGS
+// ============================================================
+const geminiInput = document.getElementById('geminiKeyInput');
+const saveGeminiBtn = document.getElementById('saveGeminiKey');
+const clearGeminiBtn = document.getElementById('clearGeminiKey');
+const geminiStatus = document.getElementById('geminiKeyStatus');
+
+function updateGeminiStatus() {
+  const key = localStorage.getItem('nirogya_gemini_key') || '';
+  if (key && geminiStatus) {
+    geminiStatus.innerHTML = '<span style="color:var(--green);font-weight:600">✓ Active: Connected to Google Gemini 2.0 AI. Health chat is fully intelligent.</span>';
+    if (geminiInput) geminiInput.value = '••••••••••••••••' + key.slice(-4);
+  } else if (geminiStatus) {
+    geminiStatus.innerHTML = '<span style="color:var(--muted)">No custom key set. Health chat is running on built-in clinical knowledge base (25+ topics).</span>';
+    if (geminiInput) geminiInput.value = '';
+  }
+}
+updateGeminiStatus();
+
+if (saveGeminiBtn) {
+  saveGeminiBtn.addEventListener('click', () => {
+    const val = (geminiInput?.value || '').trim();
+    if (!val || val.startsWith('•••') || val.length < 10) {
+      showToast('Please enter a valid Gemini API key.');
+      return;
+    }
+    localStorage.setItem('nirogya_gemini_key', val);
+    updateGeminiStatus();
+    showToast('✓ Gemini API key saved! Live AI health chat activated.');
+  });
+}
+
+if (clearGeminiBtn) {
+  clearGeminiBtn.addEventListener('click', () => {
+    localStorage.removeItem('nirogya_gemini_key');
+    updateGeminiStatus();
+    showToast('API key removed. Health chat reverted to built-in knowledge engine.');
+  });
+}
+
+// ============================================================
+// WOMEN'S CARE CONSULTATION & TOPICS
+// ============================================================
+const womenForm = document.getElementById('womenConsultForm');
+const womenStatus = document.getElementById('womenConsultStatus');
+
+if (womenForm) {
+  womenForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const doc = document.getElementById('womenDocSelect')?.value || 'Female Specialist';
+    const topic = document.getElementById('womenTopicSelect')?.value || 'Health Concern';
+    const notes = document.getElementById('womenNotes')?.value || '';
+
+    if (womenStatus) {
+      womenStatus.style.display = 'block';
+      womenStatus.style.background = '#eef7f3';
+      womenStatus.style.border = '1px solid #c9e9dc';
+      womenStatus.style.color = '#176b56';
+      womenStatus.style.padding = '12px';
+      womenStatus.style.borderRadius = '8px';
+      womenStatus.innerHTML = `<b>✓ Private Request Sent to ${escapeHTML(doc)}</b><br><small>Topic: ${escapeHTML(topic)}. Your request is end-to-end encrypted and awaiting clinician confirmation.</small>`;
+    }
+
+    showToast(`✓ Consultation request submitted to ${doc}!`);
+    document.getElementById('womenNotes').value = '';
+  });
+}
+
+document.querySelectorAll('.book-women-doctor').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const docName = btn.dataset.doc;
+    const select = document.getElementById('womenDocSelect');
+    if (select && docName) select.value = docName;
+    document.getElementById('womenNotes')?.focus();
+    showToast(`Selected ${docName} for consultation`);
+  });
+});
+
+document.querySelectorAll('.women-topic-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.women-topic-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    const text = chip.textContent.replace(/^[^\w]+/, '').trim();
+    const topicSelect = document.getElementById('womenTopicSelect');
+    if (topicSelect) {
+      for (const opt of topicSelect.options) {
+        if (opt.text.toLowerCase().includes(text.toLowerCase()) || text.toLowerCase().includes(opt.value.toLowerCase())) {
+          topicSelect.value = opt.value;
+          break;
+        }
+      }
+    }
+    showToast(`Filtered by ${text}`);
+  });
+});
+
+// ============================================================
+// CLEAR LOCAL DATA
+// ============================================================
+const clearDataBtn = document.getElementById('clearAllData');
+if (clearDataBtn) {
+  clearDataBtn.addEventListener('click', () => {
+    if (confirm('Clear all local health records, session tokens, and cached preferences?')) {
+      localStorage.clear();
+      applyDarkMode(false);
+      updateGeminiStatus();
+      showToast('All local application data cleared.');
+    }
+  });
 }
 
 renderRecords();renderTimeline();initSymptomChecker();

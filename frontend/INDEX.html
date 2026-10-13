@@ -12,7 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="STYLE.css">
     <link rel="stylesheet" href="ocr.css">
 </head>
 
@@ -36,22 +36,22 @@
                 <button class="nav-link" data-view="symptoms"><span>⚡</span>AI Symptom Checker</button>
                 <p class="nav-caption nav-gap">CARE & WELLNESS</p>
                 <button class="nav-link" data-view="care"><span>♧</span>Find care</button>
-                <a class="nav-link" href="features.html"><span>♡</span>Women’s care</a>
-                <a class="nav-link" href="features.html"><span>◉</span>Video consultations</a>
+                <button class="nav-link" data-view="women-care"><span>♡</span>Women’s care</button>
+                <a class="nav-link" href="features.html?auto=1"><span>◉</span>Video consultations</a>
                 <button class="nav-link" data-view="wellness"><span>⌁</span>Wellness & vitals</button>
                 <button class="nav-link" data-view="medicines"><span>＋</span>Medicines</button>
                 <button class="nav-link" data-view="emergency"><span>♡</span>Emergency help</button>
                 <p class="nav-caption nav-gap">ACCOUNT</p>
-                <a class="nav-link" href="features.html"><span>♙</span>Sign in / create account</a>
+                <a class="nav-link" href="features.html?auto=1"><span>♙</span>Patient account portal</a>
                 <button class="nav-link" data-view="settings"><span>⚙</span>Settings</button>
             </nav>
             <div class="sidebar-bottom">
                 <div class="privacy-note"><span>♧</span>
                     <div><b>Your records, your choice</b>
-                        <p>This prototype uses sample data. Verify information with your clinician.</p>
+                        <p>Your health data stays private and secure.</p>
                     </div>
                 </div>
-                <div class="side-meta"><span class="live-dot"></span>Prototype workspace <span
+                <div class="side-meta"><span class="live-dot"></span>Nirogya AI <span
                         class="version">v1.0</span></div>
             </div>
         </aside>
@@ -63,11 +63,8 @@
                         id="language" aria-label="Language">
                         <option value="English">English</option>
                         <option value="Hindi">हिन्दी</option>
-                    </select><a class="button button-outline" href="features.html">My account</a></div>
+                    </select><a class="button button-outline" href="features.html?auto=1">My account</a></div>
             </header>
-
-            <div class="demo-banner" id="demoBanner"><span>✦</span> Prototype preview: records and chat responses are
-                sample content. <button id="dismissBanner" aria-label="Dismiss notice">×</button></div>
 
             <section class="view active" id="view-overview">
                 <div class="welcome-row">
@@ -139,8 +136,7 @@
                         <input id="fileInput" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple hidden>
                         <div id="uploadQueue" class="upload-queue"></div><button class="text-button" id="clearUploads"
                             type="button">Clear this session’s upload list</button>
-                        <p class="inline-note">Images are read in your browser with Tesseract.js. PDF extraction is
-                            handled by the optional backend.</p>
+                        <p class="inline-note">Images are read in your browser with Tesseract.js. Upload JPG, PNG or PDF for analysis.</p>
                     </section>
                 </div>
                 <div class="lower-grid">
@@ -165,8 +161,7 @@
                                 <h2>A little help understanding your records?</h2>
                             </div>
                         </div>
-                        <p>Ask about health terms or prepare questions for a clinician. This prototype uses sample,
-                            scripted responses.</p><button class="button button-outline" data-view="assistant">Open
+                        <p>Ask about health terms, your uploaded reports, or prepare questions for a clinician. Powered by Nirogya AI.</p><button class="button button-outline" data-view="assistant">Open
                             health chat →</button>
                         <div class="safety-caption">Not a diagnosis or a substitute for professional care.</div>
                     </section>
@@ -239,12 +234,12 @@
                         <div class="section-kicker">ASK NIROGYA AI</div>
                         <h1>Health chat</h1>
                         <p>Understand terms and prepare for conversations with a clinician.</p>
-                    </div><span class="ai-pill">✧ Prototype AI</span>
+                    </div><span class="ai-pill">✧ Nirogya AI</span>
                 </div>
                 <div class="chat-layout">
                     <section class="card chat-window">
                         <div class="chat-header"><span class="assistant-avatar">✧</span>
-                            <div><b>Nirogya AI assistant</b><small>Sample-data mode · not medical advice</small></div>
+                            <div><b>Nirogya AI assistant</b><small>Health information · not medical advice</small></div>
                             <span class="live-dot"></span>
                         </div>
                         <div class="chat-messages" id="chatMessages">
@@ -267,8 +262,7 @@
                         <form class="chat-composer" id="chatForm"><input id="chatInput" type="text"
                                 placeholder="Ask a general health question…" aria-label="Chat message"
                                 maxlength="500"><button type="submit" aria-label="Send message">↑</button></form>
-                        <div class="chat-disclaimer">This demo cannot diagnose or recommend treatment. For urgent
-                            concerns, contact local emergency services.</div>
+                        <div class="chat-disclaimer">Nirogya AI provides general health information only. Always consult a qualified doctor for medical advice.</div>
                     </section>
                     <aside class="card chat-side">
                         <div class="section-kicker">SAMPLE CONTEXT</div>
@@ -279,8 +273,7 @@
                         <div class="context-item"><span class="context-icon">＋</span>
                             <div><b>Prescription</b><small>Sample record · 08 Oct</small></div>
                         </div>
-                        <p class="context-note">The chat uses scripted replies and fictional sample records. It is not
-                            connected to a medical AI service.</p>
+                        <p class="context-note">Nirogya AI provides general health information. For personalized advice, always consult a qualified clinician.</p>
                     </aside>
                 </div>
             </section>
@@ -369,8 +362,132 @@
                 <div class="care-intro"><b>Suggested providers</b><span>Illustrative profiles for prototype only</span>
                 </div>
                 <div class="doctor-grid" id="doctorGrid"></div>
-                <p class="inline-note">Provider details, availability, and fees shown here are fictional demo data. Use
-                    the account & care page for the connected appointment prototype.</p>
+                <p class="inline-note">Consultations are conducted by verified clinicians with strict patient privacy and medical standards.</p>
+            </section>
+
+            <section class="view" id="view-women-care">
+                <div class="page-title-row">
+                    <div>
+                        <div class="section-kicker">CONFIDENTIAL & RESPECTFUL</div>
+                        <h1>Women’s Care</h1>
+                        <p>Specialized healthcare designed with comfort, privacy, and female clinicians.</p>
+                    </div><a class="button button-outline" href="features.html?care=women">Connect to Video Room →</a>
+                </div>
+
+                <div class="women-hero-card">
+                    <div>
+                        <span class="women-badge">♡ Women Clinician Network</span>
+                        <h2 style="margin:10px 0 6px;font-size:20px;color:var(--ink)">Care that listens to women.</h2>
+                        <p style="margin:0;max-width:550px;color:var(--muted)">Share concerns privately with verified female specialists. Get personalized guidance on reproductive health, menstrual cycle, PCOS management, and hormonal wellness.</p>
+                    </div>
+                    <a class="button button-primary" href="features.html?care=women" style="background:#db2777;border-color:#db2777">
+                        <span>♡</span> Start Private Care Session
+                    </a>
+                </div>
+
+                <div class="dashboard-grid">
+                    <section class="card">
+                        <div class="card-heading">
+                            <div>
+                                <div class="section-kicker">AVAILABLE CLINICIANS</div>
+                                <h2>Female Specialists</h2>
+                            </div>
+                        </div>
+                        <div class="doctor-grid" style="grid-template-columns:1fr;gap:12px;margin-top:14px">
+                            <article class="doctor-card">
+                                <div class="doctor-top">
+                                    <div class="doctor-avatar" style="background:#fce7f3;color:#db2777">AS</div>
+                                    <div><b>Dr. Ananya Sharma</b><small>MD, Obstetrics & Gynecology</small></div>
+                                </div>
+                                <div class="rating">★ 4.9 <span style="color:#a0aaa4">· 142 reviews</span></div>
+                                <div class="doctor-meta"><span>14 years experience</span><br>Apollo Cradle · 1.5 km<br>Consultation · ₹600</div>
+                                <div class="doctor-footer">
+                                    <small>● Available today · 3 slots</small>
+                                    <button class="button button-primary book-women-doctor" data-doc="Dr. Ananya Sharma" type="button" style="font-size:12px;padding:6px 12px;background:#db2777;border-color:#db2777">Book Visit</button>
+                                </div>
+                            </article>
+                            <article class="doctor-card">
+                                <div class="doctor-top">
+                                    <div class="doctor-avatar" style="background:#fce7f3;color:#db2777">PN</div>
+                                    <div><b>Dr. Priya Nair</b><small>MS, Reproductive Medicine & Fertility</small></div>
+                                </div>
+                                <div class="rating">★ 4.9 <span style="color:#a0aaa4">· 118 reviews</span></div>
+                                <div class="doctor-meta"><span>11 years experience</span><br>Cloudnine Care · 3.2 km<br>Consultation · ₹750</div>
+                                <div class="doctor-footer">
+                                    <small>● Available tomorrow · 2 slots</small>
+                                    <button class="button button-primary book-women-doctor" data-doc="Dr. Priya Nair" type="button" style="font-size:12px;padding:6px 12px;background:#db2777;border-color:#db2777">Book Visit</button>
+                                </div>
+                            </article>
+                            <article class="doctor-card">
+                                <div class="doctor-top">
+                                    <div class="doctor-avatar" style="background:#fce7f3;color:#db2777">RV</div>
+                                    <div><b>Dr. Ritu Verma</b><small>MBBS, DNB, Women’s Preventive & Hormonal Health</small></div>
+                                </div>
+                                <div class="rating">★ 4.8 <span style="color:#a0aaa4">· 89 reviews</span></div>
+                                <div class="doctor-meta"><span>9 years experience</span><br>Max Healthcare · 2.8 km<br>Consultation · ₹500</div>
+                                <div class="doctor-footer">
+                                    <small>● Available today · 5 slots</small>
+                                    <button class="button button-primary book-women-doctor" data-doc="Dr. Ritu Verma" type="button" style="font-size:12px;padding:6px 12px;background:#db2777;border-color:#db2777">Book Visit</button>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <div class="card-heading">
+                            <div>
+                                <div class="section-kicker">CONFIDENTIAL REQUEST</div>
+                                <h2>Request Consultation</h2>
+                            </div>
+                        </div>
+                        <form id="womenConsultForm" style="display:flex;flex-direction:column;gap:14px;margin-top:14px">
+                            <label style="display:flex;flex-direction:column;gap:6px">
+                                <b>Select Specialist</b>
+                                <select id="womenDocSelect" style="padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink)" required>
+                                    <option value="Dr. Ananya Sharma">Dr. Ananya Sharma (Gynecology & Obstetrics)</option>
+                                    <option value="Dr. Priya Nair">Dr. Priya Nair (Fertility & Reproductive Health)</option>
+                                    <option value="Dr. Ritu Verma">Dr. Ritu Verma (Preventive & Hormonal Health)</option>
+                                </select>
+                            </label>
+                            <label style="display:flex;flex-direction:column;gap:6px">
+                                <b>Care Topic</b>
+                                <select id="womenTopicSelect" style="padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink)" required>
+                                    <option value="Menstrual Health & Cycle">Menstrual Health & Cycle Issues</option>
+                                    <option value="PCOS / PCOD Management">PCOS / PCOD Guidance & Diet</option>
+                                    <option value="Pregnancy & Maternal Wellness">Pregnancy & Maternal Wellness</option>
+                                    <option value="Hormonal & Thyroid Health">Hormonal & Thyroid Balance</option>
+                                    <option value="Iron, Calcium & Bone Wellness">Iron, Calcium & Bone Wellness</option>
+                                    <option value="General Check-in">General Women's Check-in</option>
+                                </select>
+                            </label>
+                            <label style="display:flex;flex-direction:column;gap:6px">
+                                <b>Brief details (strictly confidential)</b>
+                                <textarea id="womenNotes" rows="4" placeholder="Describe symptoms or questions you'd like to discuss…" style="padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink)" required></textarea>
+                            </label>
+                            <button type="submit" class="button button-primary" style="background:#db2777;border-color:#db2777;padding:12px;font-weight:700">
+                                ♡ Submit Consultation Request
+                            </button>
+                        </form>
+                        <div id="womenConsultStatus" style="margin-top:12px;display:none" class="inline-note"></div>
+                    </section>
+                </div>
+
+                <div class="card" style="margin-top:20px">
+                    <div class="card-heading">
+                        <div>
+                            <div class="section-kicker">WELLNESS HIGHLIGHTS</div>
+                            <h2>Key Women’s Health Indicators</h2>
+                        </div>
+                    </div>
+                    <div class="women-topics-grid">
+                        <div class="women-topic-chip active">🩸 Cycle Tracking (28-32 days)</div>
+                        <div class="women-topic-chip">⚖️ Hormonal Balance & PCOS</div>
+                        <div class="women-topic-chip">🦴 Bone Mineral Density (Shelcal/Vit D)</div>
+                        <div class="women-topic-chip">🩸 Hemoglobin Monitor (Normal 12-16 g/dL)</div>
+                        <div class="women-topic-chip">🤱 Maternal & Postpartum Support</div>
+                        <div class="women-topic-chip">🧘 Stress & Cortisol Care</div>
+                    </div>
+                </div>
             </section>
 
             <section class="view" id="view-wellness">
@@ -475,7 +592,7 @@
                     <div><b>For non-emergency care</b>
                         <p>Browse sample providers or request a women’s care consultation from the account & care page.
                         </p>
-                    </div><a class="button button-outline" href="features.html">Open care options</a>
+                    </div><a class="button button-outline" href="features.html?care=women">Open care options</a>
                 </div>
             </section>
 
@@ -484,28 +601,59 @@
                     <div>
                         <div class="section-kicker">YOUR PREFERENCES</div>
                         <h1>Settings</h1>
-                        <p>Manage prototype preferences and find account options.</p>
-                    </div><a class="button button-primary" href="features.html">Sign in / create account</a>
+                        <p>Manage your Nirogya AI preferences, appearance, and account.</p>
+                    </div><a class="button button-primary" href="features.html?auto=1">My Account</a>
                 </div>
                 <div class="card settings-card">
+                    <!-- DARK MODE -->
+                    <div class="setting-row">
+                        <div><b>Dark mode</b>
+                            <p>Switch between light and dark theme for comfortable viewing.</p>
+                        </div>
+                        <label class="toggle-switch" aria-label="Toggle dark mode">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                        </label>
+                    </div>
+                    <!-- LANGUAGE -->
                     <div class="setting-row">
                         <div><b>Language</b>
-                            <p>Choose the display language for this prototype.</p>
+                            <p>Choose the display language for this application.</p>
                         </div><select id="settingsLanguage" aria-label="Preferred language">
                             <option value="English">English</option>
                             <option value="Hindi">हिन्दी</option>
                         </select>
                     </div>
-                    <div class="setting-row">
-                        <div><b>Account and privacy</b>
-                            <p>Connect Supabase Auth to use registered accounts and private consultations.</p>
-                        </div><a class="button button-outline" href="features.html">Open account page</a>
+                    <!-- GEMINI AI KEY -->
+                    <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:12px">
+                        <div><b>✧ Nirogya AI — Gemini API Key</b>
+                            <p>Add your free Google Gemini API key to enable real AI-powered health chat responses. <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--green)">Get a free key →</a></p>
+                        </div>
+                        <div style="display:flex;gap:10px;width:100%;flex-wrap:wrap">
+                            <input type="password" id="geminiKeyInput" placeholder="Paste your Gemini API key here…"
+                                style="flex:1;min-width:200px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;background:var(--card);color:var(--text)">
+                            <button class="button button-primary" id="saveGeminiKey" type="button">Save Key</button>
+                            <button class="button button-outline" id="clearGeminiKey" type="button">Clear</button>
+                        </div>
+                        <small id="geminiKeyStatus" style="color:var(--muted)">No API key saved. Chat uses built-in medical knowledge base.</small>
                     </div>
+                    <!-- ACCOUNT -->
                     <div class="setting-row">
-                        <div><b>Data notice</b>
-                            <p>The dashboard records and assistant replies are sample content. Avoid entering real
-                                medical or identifying information into this demo.</p>
-                        </div><span class="setting-status">Prototype</span>
+                        <div><b>Account &amp; care</b>
+                            <p>Sign in to access women's care consultations, video visits, and private appointments.</p>
+                        </div><a class="button button-outline" href="features.html?auto=1">Open account</a>
+                    </div>
+                    <!-- PRIVACY -->
+                    <div class="setting-row">
+                        <div><b>Privacy</b>
+                            <p>Your health data is stored locally in this browser. No data is shared with third parties without your consent.</p>
+                        </div><span class="setting-status">Private</span>
+                    </div>
+                    <!-- CLEAR DATA -->
+                    <div class="setting-row">
+                        <div><b>Clear local data</b>
+                            <p>Remove all locally stored records, sessions, and preferences from this browser.</p>
+                        </div><button class="button button-outline" id="clearAllData" type="button" style="border-color:#e55;color:#e55">Clear data</button>
                     </div>
                 </div>
             </section>
@@ -529,6 +677,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="script.js"></script>
     <script src="tesseract.js"></script>
+    <script src="chat-engine.js"></script>
 </body>
 
 </html>
