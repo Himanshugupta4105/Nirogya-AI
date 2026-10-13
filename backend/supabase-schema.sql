@@ -1,59 +1,66 @@
--- Nirogya AI Database Schema (PostgreSQL / Supabase)
+-- Run this in Supabase Dashboard → SQL Editor.
+-- The bucket is private. The Node server uses the service-role key only on the server,
+-- verifies every user's access token, and scopes all record queries to that user's ID.
 
--- 1. User Profiles
-CREATE TABLE IF NOT EXISTS public.user_profiles (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    username TEXT UNIQUE NOT NULL,
-    full_name TEXT NOT NULL,
-    email TEXT,
-    phone TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+create table if not exists public.health_records (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  original_name text not null check (char_length(original_name) <= 180),
+  mime_type text not null check (mime_type in ('image/jpeg', 'image/png', 'application/pdf')),
+  size_bytes bigint not null check (size_bytes > 0 and size_bytes <= 10485760),
+  storage_path text not null unique,
+  record_type text not null default 'other' check (record_type in ('report', 'prescription', 'visit_note', 'other')),
+  extracted_text text not null default '',
+  extraction_method text not null check (extraction_method in ('tesseract_image_ocr', 'pdfjs_text_extraction')),
+  extraction_status text not null check (extraction_status in ('completed', 'no_text_found', 'no_text_layer')),
+  ocr_confidence numeric(5, 2) check (ocr_confidence is null or (ocr_confidence >= 0 and ocr_confidence <= 100)),
+  created_at timestamptz not null default now()
 );
 
--- 2. Doctor Profiles
-CREATE TABLE IF NOT EXISTS public.doctor_profiles (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    display_name TEXT NOT NULL,
-    specialty TEXT NOT NULL,
-    clinic_name TEXT,
-    years_experience INT DEFAULT 0,
-    is_female BOOLEAN DEFAULT false,
-    accepting_patients BOOLEAN DEFAULT true,
-    consultation_fee INT DEFAULT 500,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
+create index if not exists health_records_user_created_idx
+  on public.health_records (user_id, created_at desc);
 
--- 3. Appointments & Video Calls
-CREATE TABLE IF NOT EXISTS public.appointments (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    patient_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    doctor_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
-    consultation_type TEXT NOT NULL DEFAULT 'general',
-    mode TEXT NOT NULL DEFAULT 'video',
-    reason TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'pending', -- pending, scheduled, completed, cancelled
-    scheduled_for TIMESTAMPTZ,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
+alter table public.health_records enable row level security;
 
--- Enable Row Level Security (RLS)
-ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.doctor_profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.appointments ENABLE ROW LEVEL SECURITY;
+drop policy if exists "Users can read their own health records" on public.health_records;
+create policy "Users can read their own health records"
+  on public.health_records for select to authenticated
+  using ((select auth.uid()) = user_id);
 
--- Basic Public Read for Doctor Profiles
-CREATE POLICY "Public doctors viewable" ON public.doctor_profiles
-    FOR SELECT USING (accepting_patients = true);
+drop policy if exists "Users can insert their own health records" on public.health_records;
+create policy "Users can insert their own health records"
+  on public.health_records for insert to authenticated
+  with check ((select auth.uid()) = user_id);
 
--- Appointments access for participants
-CREATE POLICY "Participants can view appointments" ON public.appointments
-    FOR SELECT USING (auth.uid() = patient_id OR auth.uid() = doctor_id);
+drop policy if exists "Users can delete their own health records" on public.health_records;
+create policy "Users can delete their own health records"
+  on public.health_records for delete to authenticated
+  using ((select auth.uid()) = user_id);
 
-CREATE POLICY "Patients can insert appointments" ON public.appointments
-    FOR INSERT WITH CHECK (auth.uid() = patient_id);
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'health-records',
+  'health-records',
+  false,
+  10485760,
+  array['image/jpeg', 'image/png', 'application/pdf']
+)
+on conflict (id) do update
+set public = false,
+    file_size_limit = excluded.file_size_limit,
+    allowed_mime_types = excluded.allowed_mime_types;
 
-CREATE POLICY "Doctors and patients can update appointments" ON public.appointments
-    FOR UPDATE USING (auth.uid() = patient_id OR auth.uid() = doctor_id);
+drop policy if exists "Users can read their own health files" on storage.objects;
+create policy "Users can read their own health files"
+  on storage.objects for select to authenticated
+  using (bucket_id = 'health-records' and (storage.foldername(name))[1] = (select auth.uid()::text));
+
+drop policy if exists "Users can upload their own health files" on storage.objects;
+create policy "Users can upload their own health files"
+  on storage.objects for insert to authenticated
+  with check (bucket_id = 'health-records' and (storage.foldername(name))[1] = (select auth.uid()::text));
+
+drop policy if exists "Users can delete their own health files" on storage.objects;
+create policy "Users can delete their own health files"
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'health-records' and (storage.foldername(name))[1] = (select auth.uid()::text));

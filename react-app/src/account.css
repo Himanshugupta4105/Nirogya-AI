@@ -1,0 +1,14 @@
+.activity-indicator{display:inline-flex;align-items:center;gap:6px;color:#4f8f70;font-size:11px;white-space:nowrap}
+.activity-indicator>span{width:7px;height:7px;border-radius:50%;background:#49aa7d}
+.activity-indicator.is-idle{color:#9b8150}
+.activity-indicator.is-idle>span{background:#c9a65c}
+.account-page{max-width:1080px;margin:0 auto}
+.account-links{display:grid;gap:12px;margin-top:18px}
+.account-actions{display:flex;align-items:center;gap:10px}
+.account-summary{align-items:stretch}
+.account-summary .care-panel>p{font-size:12px;line-height:1.6;color:#71847a;margin:11px 0}
+.account-summary .care-panel>p b{font-size:10px;color:#385749}
+.cancel-booking{border:1px solid #ead9d5;background:#fff8f6;color:#a45d51;cursor:pointer}
+.cancel-booking:disabled{opacity:.6;cursor:wait}
+@media(max-width:760px){.feature-header{height:auto;min-height:58px;align-items:flex-start;flex-wrap:wrap;padding:10px 14px;gap:8px}.feature-header nav{width:100%;flex-wrap:wrap;justify-content:flex-start;gap:10px}.account-actions{flex-wrap:wrap;justify-content:flex-end}}
+@media(max-width:480px){.feature-header nav{gap:8px}.activity-indicator{font-size:8px}.account-actions{justify-content:flex-start}}

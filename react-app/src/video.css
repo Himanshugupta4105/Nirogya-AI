@@ -1,0 +1,2 @@
+.remote-video-wrap.has-remote .video-placeholder{display:none}
+.remote-video-wrap:not(.has-remote) video{opacity:0}
