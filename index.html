@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="0; url=frontend/INDEX.html">
+    <title>Nirogya AI | Your health, in one place</title>
+    <script>
+        window.location.replace("frontend/INDEX.html");
+    </script>
+    <style>
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: grid;
+            place-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f7faf8;
+            color: #1b3a32;
+        }
+        .loader {
+            text-align: center;
+            padding: 24px;
+        }
+        .spinner {
+            font-size: 32px;
+            color: #16745f;
+            display: inline-block;
+            animation: spin 1s infinite linear;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        a { color: #16745f; font-weight: 700; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="loader">
+        <div class="spinner">✳</div>
+        <h2>Opening Nirogya AI…</h2>
+        <p>If you are not redirected automatically, <a href="/frontend/INDEX.html">click here to enter</a>.</p>
+    </div>
+</body>
+</html>

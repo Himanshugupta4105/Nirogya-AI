@@ -13,6 +13,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ocr.css">
 </head>
 
 <body>
@@ -32,6 +33,7 @@
                 <button class="nav-link" data-view="records"><span>▤</span>Health records<i>4</i></button>
                 <button class="nav-link" data-view="timeline"><span>◷</span>Health timeline</button>
                 <button class="nav-link" data-view="assistant"><span>✧</span>Health chat<em>AI</em></button>
+                <button class="nav-link" data-view="symptoms"><span>⚡</span>AI Symptom Checker</button>
                 <p class="nav-caption nav-gap">CARE & WELLNESS</p>
                 <button class="nav-link" data-view="care"><span>♧</span>Find care</button>
                 <a class="nav-link" href="features.html"><span>♡</span>Women’s care</a>
@@ -280,6 +282,71 @@
                         <p class="context-note">The chat uses scripted replies and fictional sample records. It is not
                             connected to a medical AI service.</p>
                     </aside>
+                </div>
+            </section>
+
+            <section class="view" id="view-symptoms">
+                <div class="page-title-row">
+                    <div>
+                        <div class="section-kicker">NEURAL SYMPTOM ENGINE</div>
+                        <h1>AI Symptom Checker</h1>
+                        <p>Select your symptoms and body region for an instant preliminary clinical review.</p>
+                    </div><span class="ai-pill">⚡ Neural AI v3.0</span>
+                </div>
+                <div class="dashboard-grid">
+                    <section class="card symptom-setup-card">
+                        <div class="card-heading">
+                            <div>
+                                <div class="section-kicker">STEP 1: TARGET REGION</div>
+                                <h2>Where are you experiencing discomfort?</h2>
+                            </div>
+                        </div>
+                        <div class="body-part-tabs" id="bodyPartTabs">
+                            <button class="part-btn active" data-part="Head" type="button">🧠 Head & Neck</button>
+                            <button class="part-btn" data-part="Chest" type="button">🫁 Chest & Heart</button>
+                            <button class="part-btn" data-part="Abdomen" type="button">🫃 Abdomen</button>
+                            <button class="part-btn" data-part="Limbs" type="button">🦵 Limbs & Joints</button>
+                            <button class="part-btn" data-part="General" type="button">⚡ General / Whole Body</button>
+                        </div>
+
+                        <div class="card-heading" style="margin-top:20px">
+                            <div>
+                                <div class="section-kicker">STEP 2: SELECT SYMPTOMS</div>
+                                <h2>Choose observed indicators</h2>
+                            </div>
+                        </div>
+                        <div class="symptom-chips" id="symptomChips"></div>
+
+                        <div class="intensity-group" style="margin-top:20px">
+                            <div style="display:flex;justify-content:space-between;align-items:center">
+                                <b>Symptom Intensity: <span id="intensityVal">5</span>/10</b>
+                                <small id="intensityLabel" style="color:var(--muted)">Moderate discomfort</small>
+                            </div>
+                            <input type="range" id="symptomIntensity" min="1" max="10" value="5" style="width:100%;margin:12px 0;accent-color:var(--green)">
+                        </div>
+
+                        <div style="margin-top:20px">
+                            <button class="button button-primary" id="runSymptomScan" type="button" style="width:100%;padding:14px;cursor:pointer">
+                                <span>⚡</span> Run Neural Symptom Analysis
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="card symptom-result-card">
+                        <div class="card-heading">
+                            <div>
+                                <div class="section-kicker">PRELIMINARY ASSESSMENT</div>
+                                <h2>AI Analysis Report</h2>
+                            </div>
+                        </div>
+                        <div id="symptomResultContent">
+                            <div class="empty-state" style="padding:40px 10px;text-align:center">
+                                <span style="font-size:32px">⚡</span>
+                                <b>No analysis performed yet</b>
+                                <p>Select symptoms on the left and click "Run Neural Symptom Analysis" to generate an assessment.</p>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </section>
 

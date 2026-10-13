@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from './lib/authContext';
+import { useAuth } from '../lib/authContext';
 
 /** Blocks private routes until Supabase has resolved the current session. */
 export default function ProtectedRoute() {

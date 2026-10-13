@@ -1,6 +1,6 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { supabase } from './lib/supabase';
-import { useAuth } from './lib/authContext';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../lib/authContext';
 
 /** Shared frame for the React pages: brand/header, navigation, content, and footer. */
 export default function Layout() {

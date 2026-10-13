@@ -1,12 +1,12 @@
 import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
-import Layout from './Layout';
-import ProtectedRoute from './ProtectedRoute';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ResetPassword from './pages/ResetPassword';
-import OnlineVideoCalling from './pages/OnlineVideoCalling';
-import WomenCare from './pages/WomenCare';
-import Dashboard from './pages/Dashboard';
+import Layout from '../LAYOUT/LAYOUT';
+import ProtectedRoute from './PROTECTEDROUTERS';
+import Login from '../PAGES/LOGIN';
+import Register from '../PAGES/REGISTER';
+import ResetPassword from '../PAGES/RESETPASSWORD';
+import OnlineVideoCalling from '../PAGES/ONLINEVIDEOCALL';
+import WomenCare from '../PAGES/WOMENCARE';
+import Dashboard from '../USER ACCOUNT/MYACCOUNT';
 
 /** Central URL-to-page map for the Nirogya AI React feature app. */
 export default function Routes() {

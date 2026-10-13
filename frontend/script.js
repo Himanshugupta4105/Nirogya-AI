@@ -16,10 +16,13 @@ const doctors = [
   {name:'Dr. Sana Qureshi', specialty:'Dermatology', initials:'SQ', color:'peach', rating:'4.9', reviews:'74 reviews', experience:'9 years experience', location:'WellSpring Clinic · 1.8 km', fee:'₹600', slots:'16 Oct · 5 slots'}
 ];
 const medicines = [
-  {name:'Sample medicine A', details:'From sample prescription · Added 08 Oct', instruction:'Example instruction: as written on a fictional prescription. Confirm the exact dose and timing from the original prescription.', reminder:'Reminder off'},
-  {name:'Sample medicine B', details:'From sample prescription · Added 08 Oct', instruction:'Example instruction: details intentionally require verification against the source prescription.', reminder:'Reminder set · 8:00 PM'}
+  {name:'Dolo 650', details:'Paracetamol · Fever & Pain Relief · ₹30', instruction:'Take 1 tablet after meals as advised for fever or mild pain. Do not exceed 3 tablets in 24 hours.', reminder:'Reminder set · 2:00 PM'},
+  {name:'Combiflam', details:'Ibuprofen & Paracetamol · Body Aches · ₹45', instruction:'Take 1 tablet after food for acute muscle or joint ache. Stay well hydrated.', reminder:'Reminder off'},
+  {name:'Becosules Z', details:'B-Complex with Vitamin C & Zinc · ₹55', instruction:'Take 1 capsule daily in the morning with water for energy & mucosal health.', reminder:'Reminder set · 9:00 AM'},
+  {name:'Shelcal 500', details:'Calcium & Vitamin D3 · Bone Health · ₹145', instruction:'Take 1 tablet daily after lunch or dinner for bone and joint support.', reminder:'Reminder set · 8:30 PM'},
+  {name:'Panadol Advance 500mg', details:'Fast-acting Paracetamol · ₹120', instruction:'Take 1-2 tablets for tension headache. Maximum 8 tablets in 24 hours.', reminder:'Reminder off'}
 ];
-const views = {overview:'Overview',records:'Health records',timeline:'Health timeline',assistant:'Health chat',care:'Find care',wellness:'Wellness & vitals',medicines:'Medicines',emergency:'Emergency help',settings:'Settings'};
+const views = {overview:'Overview',records:'Health records',timeline:'Health timeline',assistant:'Health chat',symptoms:'AI Symptom Checker',care:'Find care',wellness:'Wellness & vitals',medicines:'Medicines',emergency:'Emergency help',settings:'Settings'};
 let currentUploads = [];
 let toastTimer;
 
@@ -27,6 +30,7 @@ function showToast(message){const toast=document.getElementById('toast');toast.t
 function openView(name){if(!views[name])return;document.querySelectorAll('.view').forEach(view=>view.classList.toggle('active',view.id===`view-${name}`));document.querySelectorAll('.nav-link[data-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.view===name));document.getElementById('crumb').textContent=views[name];document.getElementById('sidebar').classList.remove('open');window.scrollTo({top:0,behavior:'smooth'});if(name==='records')renderRecords();if(name==='timeline')renderTimeline()}
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>openView(button.dataset.view)));
 document.getElementById('menuToggle').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
+document.addEventListener('click',event=>{const sidebar=document.getElementById('sidebar');const toggle=document.getElementById('menuToggle');if(sidebar.classList.contains('open')&&!sidebar.contains(event.target)&&!toggle.contains(event.target)){sidebar.classList.remove('open')}});
 document.getElementById('dismissBanner').addEventListener('click',()=>document.getElementById('demoBanner').remove());
 
 function renderRecords(){const query=(document.getElementById('recordSearch')?.value||'').trim().toLowerCase();const filter=document.getElementById('recordFilter')?.value||'all';const filtered=records.filter(record=>(filter==='all'||record.type===filter)&&`${record.name} ${record.type} ${record.note}`.toLowerCase().includes(query));const tbody=document.getElementById('recordRows');tbody.innerHTML=filtered.map((record,index)=>`<tr><td><div class="table-doc"><span class="file-icon">${record.icon}</span><span><b>${escapeHTML(record.name)}</b><small>${escapeHTML(record.note)}</small></span></div></td><td><span class="type-pill">${escapeHTML(record.type)}</span></td><td>${escapeHTML(record.date)}</td><td><span class="status-pill ${record.status==='Needs review'?'review':''}">${escapeHTML(record.status)}</span></td><td><button class="row-button" data-record="${escapeHTML(record.name)}" aria-label="Open ${escapeHTML(record.name)}">↗</button></td></tr>`).join('');document.getElementById('recordsEmpty').hidden=filtered.length>0;tbody.querySelectorAll('[data-record]').forEach(button=>button.addEventListener('click',()=>openRecord(button.dataset.record)))}
@@ -57,4 +61,140 @@ function sendMessage(text){const clean=text.trim();if(!clean)return;addChatMessa
 
 document.querySelectorAll('[data-toast]').forEach(button=>button.addEventListener('click',()=>showToast(button.dataset.toast)));
 document.getElementById('settingsLanguage').addEventListener('change',event=>{document.getElementById('language').value=event.target.value;showToast('Language preference updated for this demo')});document.getElementById('language').addEventListener('change',event=>{document.getElementById('settingsLanguage').value=event.target.value;showToast('Language preference updated for this demo')});
-renderRecords();renderTimeline();
+const symptomsData = {
+  Head: ["Headache", "Dizziness", "Sore Throat", "Blurred Vision", "Earache", "Sinus Pressure"],
+  Chest: ["Cough", "Chest Pain", "Shortness of Breath", "Palpitations", "Tightness"],
+  Abdomen: ["Stomach Ache", "Nausea", "Bloating", "Acid Reflux", "Abdominal Cramps"],
+  Limbs: ["Joint Pain", "Muscle Cramp", "Numbness", "Swelling", "Stiffness"],
+  General: ["Fever", "Fatigue", "Chills", "Body Ache", "Loss of Appetite", "Mild Dehydration"]
+};
+
+let currentBodyPart = 'Head';
+let selectedSymptoms = ['Headache'];
+let currentIntensity = 5;
+
+function renderSymptomChips() {
+  const container = document.getElementById('symptomChips');
+  if (!container) return;
+  const list = symptomsData[currentBodyPart] || [];
+  container.innerHTML = list.map(item => {
+    const isSel = selectedSymptoms.includes(item);
+    return `<button class="symptom-chip ${isSel ? 'selected' : ''}" type="button" data-symptom="${escapeHTML(item)}">${isSel ? '✓ ' : '＋ '}${escapeHTML(item)}</button>`;
+  }).join('');
+}
+
+function initSymptomChecker() {
+  const bodyTabs = document.getElementById('bodyPartTabs');
+  if (bodyTabs) {
+    bodyTabs.addEventListener('click', event => {
+      const btn = event.target.closest('.part-btn');
+      if (!btn) return;
+      bodyTabs.querySelectorAll('.part-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentBodyPart = btn.dataset.part;
+      renderSymptomChips();
+    });
+  }
+
+  const container = document.getElementById('symptomChips');
+  if (container) {
+    container.addEventListener('click', event => {
+      const chip = event.target.closest('.symptom-chip');
+      if (!chip) return;
+      const s = chip.dataset.symptom;
+      if (selectedSymptoms.includes(s)) {
+        selectedSymptoms = selectedSymptoms.filter(item => item !== s);
+      } else {
+        selectedSymptoms.push(s);
+      }
+      renderSymptomChips();
+    });
+  }
+
+  const slider = document.getElementById('symptomIntensity');
+  if (slider) {
+    slider.addEventListener('input', () => {
+      currentIntensity = parseInt(slider.value, 10);
+      const valElem = document.getElementById('intensityVal');
+      const labelElem = document.getElementById('intensityLabel');
+      if (valElem) valElem.textContent = currentIntensity;
+      if (labelElem) {
+        labelElem.textContent = currentIntensity <= 3 ? 'Mild discomfort' : currentIntensity <= 6 ? 'Moderate discomfort' : 'Severe discomfort';
+      }
+    });
+  }
+
+  const runBtn = document.getElementById('runSymptomScan');
+  if (runBtn) {
+    runBtn.addEventListener('click', runSymptomAnalysis);
+  }
+
+  renderSymptomChips();
+}
+
+function runSymptomAnalysis() {
+  if (!selectedSymptoms.length) {
+    showToast('Please select at least one symptom to analyze');
+    return;
+  }
+  const resultContainer = document.getElementById('symptomResultContent');
+  if (!resultContainer) return;
+
+  resultContainer.innerHTML = `
+    <div style="padding:30px 10px;text-align:center">
+      <div style="font-size:26px">✧</div>
+      <p style="margin-top:10px;font-weight:700;color:var(--green)">Neural Symptom Engine scanning ${escapeHTML(currentBodyPart)} region…</p>
+      <small style="color:var(--muted)">Evaluating clinical probability weights and symptom clusters</small>
+    </div>
+  `;
+
+  setTimeout(() => {
+    const findings = selectedSymptoms.map(s => {
+      const prob = Math.min(94, 55 + currentIntensity * 4);
+      return `
+        <article class="analysis-finding">
+          <div class="finding-head">
+            <div>
+              <b style="font-size:13px;color:#2c4b3f">${escapeHTML(s)} in ${escapeHTML(currentBodyPart)}</b>
+              <small style="display:block;color:var(--muted);font-size:9px">Reported Intensity: ${currentIntensity}/10</small>
+            </div>
+            <span class="finding-prob">${prob}%</span>
+          </div>
+          <div class="finding-bar"><div class="finding-bar-fill" style="width:${prob}%"></div></div>
+          <p style="font-size:11px;color:#557065;line-height:1.55;margin:8px 0 0">
+            Indicators consistent with ${escapeHTML(s.toLowerCase())} in the ${escapeHTML(currentBodyPart.toLowerCase())} area. 
+            ${currentIntensity >= 7 ? 'Higher intensity observed: professional clinician review recommended.' : 'Moderate discomfort: monitor progression and maintain hydration.'}
+          </p>
+        </article>
+      `;
+    }).join('');
+
+    resultContainer.innerHTML = `
+      <div style="margin-bottom:14px;padding:12px;background:#eef7f2;border-radius:10px;font-size:11px;color:#2b6652">
+        <b>Preliminary Neural Scan:</b> ${selectedSymptoms.length} symptom cluster(s) analyzed. Not a formal diagnosis.
+      </div>
+      <div>${findings}</div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2ede7">
+        <b style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)">Suggested Recovery Roadmap</b>
+        <div class="recovery-grid">
+          <div class="recovery-step"><small>Phase 1</small><b>Strict Hydration</b></div>
+          <div class="recovery-step"><small>Phase 2</small><b>Rest & Monitor</b></div>
+          <div class="recovery-step"><small>Phase 3</small><b>Light Nutrition</b></div>
+          <div class="recovery-step"><small>Phase 4</small><b>Clinician Review</b></div>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:10px">
+        <button class="button button-primary" style="flex:1" data-view="care" type="button"><span>♧</span> Consult a Doctor</button>
+        <a class="button button-outline" style="flex:1" href="features.html"><span>♡</span> Women's Care Visit</a>
+      </div>
+    `;
+
+    resultContainer.querySelectorAll('[data-view]').forEach(btn => {
+      btn.addEventListener('click', () => openView(btn.dataset.view));
+    });
+
+    showToast('Neural symptom assessment complete');
+  }, 650);
+}
+
+renderRecords();renderTimeline();initSymptomChecker();

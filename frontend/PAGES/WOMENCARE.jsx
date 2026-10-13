@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/authContext';
-import '../care-extra.css';
+import './EXTRACARE.css';
 
 function formatDate(value) {
     if (!value) return 'Awaiting clinician confirmation';
